@@ -1,0 +1,28 @@
+services:
+  ranger-db:
+    image: apache/ranger-db:2.4.0
+    container_name: ranger-db
+    # hostname: ranger-db.example.com
+    networks:
+      - rangernw
+    healthcheck:
+      test: ["CMD-SHELL", "su -c 'pg_isready -q' postgres"]
+      interval: 10s
+      timeout: 2s
+      retries: 30
+
+  ranger:
+    image: apache/ranger:2.4.0
+    container_name: ranger
+    # hostname: ranger.example.com
+    networks:
+      - rangernw
+    environment:
+      - RANGER_VERSION=2.4.0
+      - RANGER_DB_TYPE=postgres
+    ports:
+      - "6080:6080"
+    command: /home/ranger/scripts/ranger.sh
+
+networks:
+  rangernw:
