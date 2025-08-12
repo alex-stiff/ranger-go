@@ -47,6 +47,33 @@ func handleNon2xxResponse(resp *http.Response) error {
 	return nil
 }
 
+func (c *Client) GetPolicy(policyName string, serviceName string) (*Policy, error) {
+	encodedServiceName := url.QueryEscape(serviceName)
+	encodedPolicyName := url.QueryEscape(policyName)
+	uri := fmt.Sprintf("%s/service/public/v2/api/service/%s/policy/%s", c.BaseURL, encodedServiceName, encodedPolicyName)
+
+	req, err := http.NewRequest("GET", uri, nil)
+
+	if err != nil {
+		return nil, fmt.Errorf("error creating get policy request to %s: %w", uri, err)
+	}
+
+	resp, err := c.doRequest(req)
+	if err != nil {
+		return nil, fmt.Errorf("error making get policy request to %s: %w", uri, err)
+	}
+
+	defer resp.Body.Close()
+
+	var policy Policy
+
+	if err := json.NewDecoder(resp.Body).Decode(&policy); err != nil {
+		return nil, fmt.Errorf("error decoding response: %w", err)
+	}
+
+	return &policy, nil
+}
+
 func (c *Client) GetPolicies(serviceName ...string) ([]Policy, error) {
 	if len(serviceName) > 1 {
 		return nil, fmt.Errorf("only one service name can be provided, got %d", len(serviceName))
