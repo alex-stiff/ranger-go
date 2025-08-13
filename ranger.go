@@ -181,3 +181,25 @@ func (c *Client) UpdatePolicy(policy *Policy) (*Policy, error) {
 
 	return &updatedPolicy, nil
 }
+
+func (c *Client) GetServices() ([]Service, error) {
+	uri := fmt.Sprintf("%s/service/public/v2/api/service", c.BaseURL)
+
+	req, err := http.NewRequest("GET", uri, nil)
+	if err != nil {
+		return nil, fmt.Errorf("error creating get services request to %s: %w", uri, err)
+	}
+
+	resp, err := c.doRequest(req)
+	if err != nil {
+		return nil, fmt.Errorf("error making get services request to %s: %w", uri, err)
+	}
+	defer resp.Body.Close()
+
+	var services []Service
+	if err := json.NewDecoder(resp.Body).Decode(&services); err != nil {
+		return nil, fmt.Errorf("error decoding get services response: %w", err)
+	}
+
+	return services, nil
+}

@@ -42,3 +42,18 @@ type Policy struct {
 	ServiceType    string       `json:"serviceType"`
 	IsDenyAllElse  bool         `json:"isDenyAllElse"`
 }
+
+type Service struct {
+	ID               int               `json:"id,omitempty"`
+	GUID             string            `json:"guid,omitempty"`
+	IsEnabled        bool              `json:"isEnabled"`
+	DisplayName      string            `json:"displayName,omitempty"`
+	Type             string            `json:"type"`
+	Name             string            `json:"name"`
+	TagService       string            `json:"tagService,omitempty"`
+	Configs          map[string]string `json:"configs,omitempty"`
+	PolicyVersion    int               `json:"policyVersion,omitempty"`
+	PolicyUpdateTime int64             `json:"policyUpdateTime,omitempty"`
+	TagVersion       int64             `json:"tagVersion,omitempty"`
+	TagUpdateTime    int64             `json:"tagUpdateTime,omitempty"`
+}
